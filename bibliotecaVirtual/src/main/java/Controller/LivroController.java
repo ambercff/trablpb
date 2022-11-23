@@ -47,6 +47,17 @@ public class LivroController extends HttpServlet {
 		case "remover":
 			removerLivro(request, response);
 			break;
+
+		case "promocao":
+			calcularPromocao(request, response);
+			break;
+
+		case "idade":
+			calcularIdade(request, response);
+			break;
+
+		case "tempo":
+			calcularTempo(request, response);
 		default:
 			System.out.println("Erro! Operação não encontrada.");
 		}
@@ -151,5 +162,63 @@ public class LivroController extends HttpServlet {
 		RequestDispatcher dispatcher = request.getRequestDispatcher("/status.jsp");
 		dispatcher.forward(request, response);
 	}
+
+	private void calcularPromocao(HttpServletRequest request, HttpServletResponse response)
+			throws ServletException, IOException {
+			
+		int id = Integer.parseInt(request.getParameter("id"));
+		double desconto = Double.parseDouble(request.getParameter("descontoCampo"));
+		
+		Livro livro = livrosDAO.procurarLivro(id);
+
+		double novoPreco = livro.calcularPromocao(desconto);
+		
+		request.setAttribute("livro", livro);
+		request.setAttribute("novoPreco", novoPreco); //O MÉTODO
+		
+		request.setAttribute("metodo", "calcularPromocao");
+		
+		RequestDispatcher dispatcher = request.getRequestDispatcher("/metodo.jsp");
+		dispatcher.forward(request, response);
+	}
 	
+	private void calcularIdade(HttpServletRequest request, HttpServletResponse response)
+			throws ServletException, IOException {
+		
+		int id = Integer.parseInt(request.getParameter("id"));
+		
+		Livro livro = livrosDAO.procurarLivro(id);
+		
+		int idade = livro.calcularIdade();
+		
+		request.setAttribute("Livro", livro);
+		
+		request.setAttribute("idade", idade); //O MÉTODO
+		
+		request.setAttribute("metodo", "calcularIdade");
+		
+		RequestDispatcher dispatcher = request.getRequestDispatcher("/metodo.jsp");
+		dispatcher.forward(request, response);
+	}
+	
+	private void calcularTempo(HttpServletRequest request, HttpServletResponse response)
+			throws ServletException, IOException {
+		
+		int id = Integer.parseInt(request.getParameter("id"));
+		int tempo = Integer.parseInt(request.getParameter("tempoMedioCampo"));
+		
+		Livro livro = livrosDAO.procurarLivro(id);
+
+		int tempoMedio = livro.calcularTempo(tempo);
+		
+		request.setAttribute("Livro", livro);
+		
+		request.setAttribute("tempoMedio", tempoMedio); //O MÉTODO
+		
+		
+		request.setAttribute("metodo", "calcularTempo");
+		
+		RequestDispatcher dispatcher = request.getRequestDispatcher("/metodo.jsp");
+		dispatcher.forward(request, response);
+	}
 }
